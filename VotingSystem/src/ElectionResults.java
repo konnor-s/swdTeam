@@ -15,6 +15,7 @@ public class ElectionResults extends JFrame{
     private JComboBox positionBox;
     private String state;
     private String position;
+    private JTextArea resultsArea;
 
     public ElectionResults(){
         super("Election Results");
@@ -57,6 +58,8 @@ public class ElectionResults extends JFrame{
                 }
         );
 
+        resultsArea = new JTextArea();
+        add(resultsArea, BorderLayout.CENTER);
 
     }
 
@@ -137,8 +140,10 @@ public class ElectionResults extends JFrame{
                 }
             }
         }
+        String text = "Candidates         Votes\n";
         for(int i = 0; i < candidates.size(); i++){
-            System.out.println(candidates.get(i) + " " + numVotes[i]);
+            text += candidates.get(i) + "        " + numVotes[i] + "\n";
         }
+        resultsArea.setText(text);
     }
 }
