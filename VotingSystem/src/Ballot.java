@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -8,11 +10,15 @@ public class Ballot extends JFrame {
         super("Voter Ballot for "+county+", "+ state);
 
 
-        setLayout(new GridLayout(30,4));
+        setLayout(new GridLayout(30,2));
         JPanel lPanel = new JPanel();
         JPanel rPanel = new JPanel();
         lPanel.setLayout(new FlowLayout());
         rPanel.setLayout(new FlowLayout());
+
+        ArrayList groups = new ArrayList<ButtonGroup>();
+        ArrayList arrayOfChoices = new ArrayList<ArrayList>();
+        ArrayList arrayOfChoiceButtons = new ArrayList<ArrayList>();
 
         try {
             //Connect to server
@@ -29,13 +35,14 @@ public class Ballot extends JFrame {
             }
             int posLength = pos.size();
 
-            ArrayList groups = new ArrayList<ButtonGroup>();
-            ArrayList choices = new ArrayList<String>();
+
 
             for (int i = 0; i < posLength; i++) {
-                choices.clear();
                 groups.add(new ButtonGroup());
-
+                ArrayList choices = new ArrayList<String>();
+                ArrayList buttons = new ArrayList<JButton>();
+                ArrayList labels = new ArrayList<JRadioButton>();
+                ArrayList panels = new ArrayList<JPanel>();
                 add(new JLabel((String) pos.get(i)));
 
                 //get list of choice for this position
@@ -43,13 +50,34 @@ public class Ballot extends JFrame {
                 while (rs.next()) {
                     choices.add(rs.getString(1));
                 }
+
                 for (int j = 0; j < choices.size(); j++) {
-                    add(new JLabel((String) choices.get(j)));
+                    buttons.add(new JRadioButton());
+                    JLabel l = new JLabel((String) choices.get(j));
+                    JPanel p = new JPanel();
+                    p.add((JRadioButton) buttons.get(j));
+                    p.add(l);
+                    add(p);
+
+                    ((ButtonGroup) groups.get(i)).add((JRadioButton) buttons.get(j));
 
                 }
+                arrayOfChoices.add(choices);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        JButton submit = new JButton("Submit Votes");
+        add(submit);
+        submit.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        for(Object b:arrayOfChoiceButtons){
+
+                        }
+                    }
+                }
+        );
     }
 }
