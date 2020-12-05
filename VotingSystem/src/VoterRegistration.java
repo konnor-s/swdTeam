@@ -1,5 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
 
 public class VoterRegistration extends JFrame {
     VoterRegistration(){
@@ -29,6 +32,29 @@ public class VoterRegistration extends JFrame {
 
         JButton reg = new JButton("Click to Register");
         add(reg);
+
+        reg.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        try {
+                            Connection connection = DriverManager.getConnection("jdbc:mysql:s-l112.engr.uiowa.edu:3306", "engr_class011", "dbforece!");
+                            Statement statement = connection.createStatement();
+                            //ResultSet ids = statement.executeQuery("SELECT License FROM VoterRegistry");
+
+                            PreparedStatement insert = connection.prepareStatement("INSERT INTO VoterRegistry "+"(License, name) "+"VALUES (?,?)");
+                            insert.setString(1,"123456");
+                            insert.setString(2,"Konnor");
+                            insert.executeUpdate();
+
+                        }
+                        catch (SQLException e) {
+                            e.printStackTrace();
+                        } ;
+
+                    }
+                }
+        );
 
     }
 }
