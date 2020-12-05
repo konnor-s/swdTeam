@@ -11,10 +11,16 @@ public class ElectionResults extends JFrame{
     private ArrayList<String> counties;
     private ArrayList<String> states;
     private ArrayList<Integer> votes;
+    private JPanel selectionPanel;
+    private JComboBox positionBox;
 
     public ElectionResults(){
         super("Election Results");
-        //getResults();
+        getResults();
+        selectionPanel = new JPanel();
+        selectionPanel.setLayout(new FlowLayout());
+        add(selectionPanel, BorderLayout.NORTH);
+
 
         String[] regions = {"Select Region", "All States", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
                 "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
@@ -22,19 +28,22 @@ public class ElectionResults extends JFrame{
                 "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina",
                 "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
                 "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
-        JComboBox regionBox = new JComboBox<String>(regions);
-        add(regionBox, BorderLayout.NORTH);
+        JComboBox regionBox = new JComboBox(regions);
+        selectionPanel.add(regionBox);
+        positionBox = new JComboBox();
+        selectionPanel.add(positionBox);
         regionBox.addItemListener(
                 new ItemListener(){
                     @Override
                     public void itemStateChanged(ItemEvent event){
                         if(event.getStateChange() == ItemEvent.SELECTED) {
                             String str = String.valueOf(regionBox.getSelectedItem());
-                            System.out.println(str);
+                            stateSelected(str);
                         }
                     }
                 }
         );
+
 
     }
 
@@ -67,14 +76,33 @@ public class ElectionResults extends JFrame{
     }
 
     public void stateSelected(String state){
-        JPanel panel = new JPanel();
-        add(panel, BorderLayout.CENTER);
-        ArrayList<String> statePositions = new ArrayList<>();
+
+        ArrayList<String> list = new ArrayList<>();
+        // get list of all positions in state
         for(int i = 0; i < states.size(); i++){
             if(states.get(i).equals(state)){
-                statePositions.add(positions.get(i));
+                System.out.println(positions.get(i));
+                list.add(positions.get(i));
             }
         }
+        // Remove duplicates
+        ArrayList<String> statePositions = new ArrayList<>();
+        for(int i = 0; i < list.size(); i ++){
+            if(!statePositions.contains(list.get(i))){
+                statePositions.add(list.get(i));
+            }
+        }
+        //String[] posArray = new String[statePositions.size()];
+        if(positionBox.getItemCount()>0){
+            positionBox.removeAllItems();
+        }
+
+        for(int i = 0; i < statePositions.size(); i ++){
+            positionBox.addItem(statePositions.get(i));
+        }
+
+
+
 
     }
 }
