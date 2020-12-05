@@ -73,6 +73,7 @@ public class VoterRegistration extends JFrame {
                                     insert.setString(4, countyT.getText());
                                     insert.setString(5, state.getText());
                                     insert.executeUpdate();
+                                    message.setText("Success!");
                                 }
                                 else {
                                     message.setText("This license is already registered!");
