@@ -51,6 +51,14 @@ public class CreateBallot extends JFrame {
                         JPopupMenu temp = new JPopupMenu("Error");
                         temp.add(new JLabel("This person is already a candidate"));
                         temp.setVisible(true);
+                        temp.setSize(300,300);
+
+                        Timer t = new Timer(3000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent actionEvent) {
+                               temp.setVisible(false);
+                            }
+                        });
                     }
                 }
                 catch(SQLException e){
@@ -68,6 +76,15 @@ public class CreateBallot extends JFrame {
                     Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
                     Statement statement = connection.createStatement();
 
+                    //Remove from database now
+                    //Syntax isn't correct to delete yet
+                    PreparedStatement remove = connection.prepareStatement("DELETE FROM Ballot " + "(Choice,County,State,Position,Votes) " + "VALUES (?,?,?,?,?)");
+                    remove.setString(1,jtfForName.getText());
+                    remove.setString(2,county);
+                    remove.setString(3,state);
+                    remove.setString(4,jtfForPosition.getText());
+                    remove.setInt(5,0);
+                    remove.executeUpdate();
 
                 }
                 catch(SQLException e){
