@@ -8,7 +8,7 @@ public class Ballot extends JFrame {
         super("Voter Ballot for "+county+", "+ state);
 
 
-        setLayout(new GridLayout(30,4));
+        setLayout(new GridLayout(30,1));
         JPanel lPanel = new JPanel();
         JPanel rPanel = new JPanel();
         lPanel.setLayout(new FlowLayout());
@@ -30,12 +30,16 @@ public class Ballot extends JFrame {
             int posLength = pos.size();
 
             ArrayList groups = new ArrayList<ButtonGroup>();
-            ArrayList choices = new ArrayList<String>();
+
+            ArrayList arrayOfChoices = new ArrayList<ArrayList>();
+            ArrayList arrayOfChoiceButtons = new ArrayList<ArrayList>();
 
             for (int i = 0; i < posLength; i++) {
-                choices.clear();
                 groups.add(new ButtonGroup());
-
+                ArrayList choices = new ArrayList<String>();
+                ArrayList buttons = new ArrayList<JButton>();
+                ArrayList labels = new ArrayList<JRadioButton>();
+                ArrayList panels = new ArrayList<JPanel>();
                 add(new JLabel((String) pos.get(i)));
 
                 //get list of choice for this position
@@ -43,10 +47,18 @@ public class Ballot extends JFrame {
                 while (rs.next()) {
                     choices.add(rs.getString(1));
                 }
+
                 for (int j = 0; j < choices.size(); j++) {
-                    add(new JLabel((String) choices.get(j)));
+                    buttons.add(new JRadioButton());
+                    JLabel l = new JLabel((String) choices.get(j));
+                    JPanel p = new JPanel();
+                    p.add((JRadioButton) buttons.get(j));
+                    p.add(l);
+
+                    add(p);
 
                 }
+                arrayOfChoices.add(choices);
             }
         } catch (SQLException e) {
             e.printStackTrace();
