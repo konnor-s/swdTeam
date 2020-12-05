@@ -13,10 +13,12 @@ public class ElectionResults extends JFrame{
     private ArrayList<Integer> votes;
     private JPanel selectionPanel;
     private JComboBox positionBox;
+    private String state;
+    private String position;
 
     public ElectionResults(){
         super("Election Results");
-        getResults();
+        getData();
         selectionPanel = new JPanel();
         selectionPanel.setLayout(new FlowLayout());
         add(selectionPanel, BorderLayout.NORTH);
@@ -37,8 +39,19 @@ public class ElectionResults extends JFrame{
                     @Override
                     public void itemStateChanged(ItemEvent event){
                         if(event.getStateChange() == ItemEvent.SELECTED) {
-                            String str = String.valueOf(regionBox.getSelectedItem());
-                            stateSelected(str);
+                            state = String.valueOf(regionBox.getSelectedItem());
+                            stateSelected();
+                        }
+                    }
+                }
+        );
+        positionBox.addItemListener(
+                new ItemListener(){
+                    @Override
+                    public void itemStateChanged(ItemEvent event){
+                        if(event.getStateChange() == ItemEvent.SELECTED) {
+                            position = String.valueOf(positionBox.getSelectedItem());
+                            getResults();
                         }
                     }
                 }
@@ -47,7 +60,7 @@ public class ElectionResults extends JFrame{
 
     }
 
-    public void getResults(){
+    public void getData(){
         final String SELECT_QUERY = "SELECT Choice, Position, County, State, Votes FROM Ballot";
         choices = new ArrayList<>();
         positions = new ArrayList<>();
@@ -75,13 +88,12 @@ public class ElectionResults extends JFrame{
         }
     }
 
-    public void stateSelected(String state){
+    public void stateSelected(){
 
         ArrayList<String> list = new ArrayList<>();
         // get list of all positions in state
         for(int i = 0; i < states.size(); i++){
             if(states.get(i).equals(state)){
-                System.out.println(positions.get(i));
                 list.add(positions.get(i));
             }
         }
@@ -92,17 +104,41 @@ public class ElectionResults extends JFrame{
                 statePositions.add(list.get(i));
             }
         }
-        //String[] posArray = new String[statePositions.size()];
         if(positionBox.getItemCount()>0){
             positionBox.removeAllItems();
         }
-
         for(int i = 0; i < statePositions.size(); i ++){
             positionBox.addItem(statePositions.get(i));
         }
 
+    }
 
+    public void getResults(){
+        ArrayList<String> list = new ArrayList<>();
+        for(int i = 0; i < votes.size(); i++){
+            if(states.get(i).equals(state) && positions.get(i).equals(position)){
+                list.add(choices.get(i));
+            }
+        }
+        ArrayList<String> candidates = new ArrayList<>();
+        for(int i = 0; i < list.size(); i++){
+            if(!candidates.contains(list.get(i))){
+                candidates.add(list.get(i));
+            }
+        }
+        int[] numVotes = new int[candidates.size()];
+        for(int i = 0; i < votes.size(); i++) {
+            if (states.get(i).equals(state) && positions.get(i).equals(position)) {
+                for (int j = 0; j < candidates.size(); j++) {
+                    if(candidates.get(j).equals(choices.get(i))){
+                        numVotes[j] += votes.get(i);
+                    }
 
-
+                }
+            }
+        }
+        for(int i = 0; i < candidates.size(); i++){
+            System.out.println(candidates.get(i) + " " + numVotes[i]);
+        }
     }
 }
