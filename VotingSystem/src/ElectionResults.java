@@ -1,35 +1,38 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
+import java.awt.*;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class ElectionResults extends JFrame{
 
     public ElectionResults(){
         super("Election Results");
+        //setLayout(new FlowLayout());
 
-        String[] regions = {"Country", "State", "County"};
-        JList regionList = new JList<String>(regions);
-        regionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add(new JScrollPane(regionList));
-        regionList.addListSelectionListener(
-                new ListSelectionListener(){
+        String[] regions = {"Select Region", "All States", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+                "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
+                "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+                "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina",
+                "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+                "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
+        JComboBox regionBox = new JComboBox<String>(regions);
+        add(regionBox, BorderLayout.NORTH);
+        regionBox.addItemListener(
+                new ItemListener(){
                     @Override
-                    public void valueChanged(ListSelectionEvent event){
-                        int num = regionList.getSelectedIndex();
-                        switch (num){
-                            case 0:
-                                System.out.println("Country");
-                                break;
-                            case 1:
-                                System.out.println("State");
-                                break;
-                            case 2:
-                                System.out.println("County");
-                                break;
+                    public void itemStateChanged(ItemEvent event){
+                        if(event.getStateChange() == ItemEvent.SELECTED) {
+                            String str = String.valueOf(regionBox.getSelectedItem());
+                            System.out.println(str);
                         }
                     }
                 }
         );
 
+    }
+
+    public void stateSelected(String state){
+        JPanel panel = new JPanel();
+        add(panel, BorderLayout.CENTER);
     }
 }

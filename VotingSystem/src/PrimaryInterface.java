@@ -55,6 +55,19 @@ public class PrimaryInterface extends JFrame {
                     }
                 }
         );
+        JButton vResults = new JButton();
+        vResults.setText("Election Results");
+        vResults.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        ElectionResults rGui = new ElectionResults();
+                        //vGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        rGui.setSize(600,400);
+                        rGui.setVisible(true);
+                    }
+                }
+        );
         add(info);
         add(pswrd);
         add(pswrField);
@@ -65,5 +78,6 @@ public class PrimaryInterface extends JFrame {
         add(name);
         add(vLogin);
         add(vReg);
+        add(vResults);
     }
 }

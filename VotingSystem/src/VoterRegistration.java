@@ -38,7 +38,7 @@ public class VoterRegistration extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         try {
-                            Connection connection = DriverManager.getConnection("jdbc:mysql:s-l112.engr.uiowa.edu:3306", "engr_class011", "dbforece!");
+                            Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
                             Statement statement = connection.createStatement();
                             //ResultSet ids = statement.executeQuery("SELECT License FROM VoterRegistry");
 
