@@ -6,7 +6,7 @@ public class Ballot extends JFrame {
     Ballot(String county, String state){
         super("Voter Ballot for "+county+", "+ state);
 
-        int p =9 //should be number of positions from database.
+        int p =9; //should be number of positions from database.
 
         setLayout(new GridLayout(1,2));
         JPanel lPanel = new JPanel();
@@ -19,12 +19,12 @@ public class Ballot extends JFrame {
 
 
             //create new JPanel in either left or right column
-            if(i<=Math.ceil(p/2))){
-                lPanel.add(new JPanel())
-}
-            else{
-                rPanel.add(new JPanel());
-             }
+            //if(i<=Math.ceil(p/2))){
+            //    lPanel.add(new JPanel())
+            //}
+            //else{
+            //    rPanel.add(new JPanel());
+             //}
             //create button group
             //
 

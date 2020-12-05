@@ -42,6 +42,19 @@ public class PrimaryInterface extends JFrame {
                     }
                 }
         );
+        JButton vReg = new JButton();
+        vReg.setText("Voter Registration");
+        vReg.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        VoterRegistration rGui = new VoterRegistration();
+                        //vGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        rGui.setSize(600,400);
+                        rGui.setVisible(true);
+                    }
+                }
+        );
         add(info);
         add(pswrd);
         add(pswrField);
@@ -51,5 +64,6 @@ public class PrimaryInterface extends JFrame {
         add(voterLogin);
         add(name);
         add(vLogin);
+        add(vReg);
     }
 }
