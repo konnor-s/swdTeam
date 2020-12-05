@@ -14,7 +14,7 @@ public class ElectionResults extends JFrame{
 
     public ElectionResults(){
         super("Election Results");
-        //setLayout(new FlowLayout());
+        //getResults();
 
         String[] regions = {"Select Region", "All States", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
                 "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
@@ -58,7 +58,7 @@ public class ElectionResults extends JFrame{
                 positions.add(String.valueOf(resultSet.getObject(2)));
                 counties.add(String.valueOf(resultSet.getObject(3)));
                 states.add(String.valueOf(resultSet.getObject(4)));
-                votes.add((int)resultSet.getObject(5));
+                votes.add(resultSet.getInt(5));
             }
         }
         catch (SQLException e) {
@@ -69,5 +69,12 @@ public class ElectionResults extends JFrame{
     public void stateSelected(String state){
         JPanel panel = new JPanel();
         add(panel, BorderLayout.CENTER);
+        ArrayList<String> statePositions = new ArrayList<>();
+        for(int i = 0; i < states.size(); i++){
+            if(states.get(i).equals(state)){
+                statePositions.add(positions.get(i));
+            }
+        }
+
     }
 }
