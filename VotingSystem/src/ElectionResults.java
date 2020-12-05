@@ -2,8 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class ElectionResults extends JFrame{
+    private ArrayList<String> choices;
+    private ArrayList<String> positions;
+    private ArrayList<String> counties;
+    private ArrayList<String> states;
+    private ArrayList<Integer> votes;
 
     public ElectionResults(){
         super("Election Results");
@@ -29,6 +36,34 @@ public class ElectionResults extends JFrame{
                 }
         );
 
+    }
+
+    public void getResults(){
+        final String SELECT_QUERY = "SELECT Choice, Position, County, State, Votes FROM Ballot";
+        choices = new ArrayList<>();
+        positions = new ArrayList<>();
+        counties = new ArrayList<>();
+        states = new ArrayList<>();
+        votes = new ArrayList<>();
+
+        try (
+                Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(SELECT_QUERY))
+        {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int numColumns = metaData.getColumnCount();
+            while (resultSet.next()){
+                choices.add(String.valueOf(resultSet.getObject(1)));
+                positions.add(String.valueOf(resultSet.getObject(2)));
+                counties.add(String.valueOf(resultSet.getObject(3)));
+                states.add(String.valueOf(resultSet.getObject(4)));
+                votes.add((int)resultSet.getObject(5));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stateSelected(String state){
