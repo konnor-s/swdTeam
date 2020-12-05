@@ -3,8 +3,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Ballot extends JFrame {
-    Ballot(String country, String state){
-        super("Voter Ballot");
+    Ballot(String county, String state){
+        super("Voter Ballot for "+county+", "+ state);
 
         int p =9 //should be number of positions from database.
 
