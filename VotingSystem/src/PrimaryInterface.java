@@ -36,7 +36,7 @@ public class PrimaryInterface extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         Ballot vGui = new Ballot(county.getText(),state.getText());
-                        //vGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        vGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         vGui.setSize(600,800);
                         vGui.setVisible(true);
                     }
@@ -49,7 +49,7 @@ public class PrimaryInterface extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         VoterRegistration rGui = new VoterRegistration();
-                        //vGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                        rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         rGui.setSize(600,400);
                         rGui.setVisible(true);
                     }
