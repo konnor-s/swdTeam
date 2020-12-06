@@ -57,9 +57,21 @@ public class PrimaryInterface extends JFrame {
 
                                     Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
                                     Statement statement = connection.createStatement();
-                                    ResultSet rs = statement.executeQuery("SELECT Finalized FRom Ballot WHERE County = '" + countyAField.getText() + "' AND State = '" + stateAField.getText() + "'");
+                                    ResultSet rs = statement.executeQuery("SELECT Finalized FROM Ballot WHERE County = '" + countyAField.getText() + "' AND State = '" + stateAField.getText() + "'");
                                     boolean finalized = true;
-                                    finalized = rs.getBoolean(1);
+                                    rs.next();
+                                    try {
+                                        finalized = rs.getBoolean(1);
+                                        System.out.println(finalized);
+                                    }
+                                    //If you get an empty set exception, that means the auditor hasn't input any candidates yet, so the gui should open.
+                                    catch (SQLException e){
+                                        CreateBallot bGui = new CreateBallot(countyAField.getText(), stateAField.getText());
+                                        bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                        bGui.setSize(1200, 800);
+                                        bGui.setVisible(true);
+                                    }
+                                    //If the ballot is not finalized, open the gui
                                     if(!finalized){
                                         CreateBallot bGui = new CreateBallot(countyAField.getText(), stateAField.getText());
                                         bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,11 +83,9 @@ public class PrimaryInterface extends JFrame {
                                     }
 
                                 } catch (SQLException e) {
+
                                     e.printStackTrace();
                                 }
-
-
-
                             }
                             else{
                                 errorA.setText("Invalid Password");
@@ -129,12 +139,38 @@ public class PrimaryInterface extends JFrame {
                                 voted = rs2.getBoolean(1);
 
                             }
-                            connection.close();
+                            //If he hasn't voted, test if ballot is finalized
                             if(!voted){
-                                Ballot vGui = new Ballot(countyVField.getText(), stateVField.getText(), true, idField.getText());
-                                vGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                                vGui.setSize(600, 800);
-                                vGui.setVisible(true);
+
+                                ResultSet rs3 = statement.executeQuery("SELECT Finalized FROM Ballot WHERE County = '" + countyVField.getText() + "' AND State = '" + stateVField.getText() + "'");
+                                boolean finalized = true;
+                                rs3.next();
+                                try {
+                                    finalized = rs3.getBoolean(1);
+                                }
+                                //if there are no entries, ballot isn't finalized
+                                catch(SQLException e){
+                                    finalized = false;
+                                    e.printStackTrace();
+                                }
+                                //if it is finalized, check if it is certified
+                                if(finalized) {
+                                    ResultSet rs1 = statement.executeQuery("SELECT Certified FROM Ballot WHERE County = '" + countyVField.getText() + "' AND State = '" + stateVField.getText() + "'");
+                                    boolean certified = true;
+                                    rs1.next();
+                                    certified = rs1.getBoolean(1);
+                                    if (!certified) {
+                                        Ballot vGui = new Ballot(countyVField.getText(), stateVField.getText(), true, idField.getText());
+                                        vGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                        vGui.setSize(600, 800);
+                                        vGui.setVisible(true);
+                                    } else {
+                                        errorV.setText("Results Already Certified");
+                                    }
+                                }
+                                else{
+                                    errorV.setText("Ballot not Finalized");
+                                }
                             }
                             else {
                                 if (!exists) {
