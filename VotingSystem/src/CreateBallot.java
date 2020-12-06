@@ -78,12 +78,11 @@ public class CreateBallot extends JFrame {
 
                     //Remove from database now
                     //Need to find correct syntax for removing from the database.
-                    PreparedStatement remove = connection.prepareStatement("DELETE FROM Ballot " + "(Choice,County,State,) " + "VALUES (?,?,?)");
+                    String tempString = "DELETE FROM Ballot WHERE Choice = ? AND County = ?";
+                    PreparedStatement remove = connection.prepareStatement(tempString);
                     remove.setString(1,jtfForName.getText());
                     remove.setString(2,county);
-                    remove.setString(3,state);
                     remove.executeUpdate();
-
                 }
                 catch(SQLException e){
                     e.printStackTrace();
