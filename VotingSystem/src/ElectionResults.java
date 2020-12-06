@@ -108,7 +108,7 @@ public class ElectionResults extends JFrame{
      * Method connects to database to get results and stores data in ArrayLists
      */
     public void getData(){
-        final String SELECT_QUERY = "SELECT Choice, Position, County, State, Votes FROM Ballot";
+        final String SELECT_QUERY = "SELECT Choice, Position, County, State, Votes, Certified FROM Ballot";
         choices = new ArrayList<>();
         positions = new ArrayList<>();
         counties = new ArrayList<>();
@@ -126,11 +126,13 @@ public class ElectionResults extends JFrame{
             // process query results
             ResultSetMetaData metaData = resultSet.getMetaData();
             while (resultSet.next()){
-                choices.add(String.valueOf(resultSet.getObject(1)));
-                positions.add(String.valueOf(resultSet.getObject(2)));
-                counties.add(String.valueOf(resultSet.getObject(3)));
-                states.add(String.valueOf(resultSet.getObject(4)));
-                votes.add(resultSet.getInt(5));
+                if(resultSet.getInt(6) == 1){
+                    choices.add(resultSet.getString(1));
+                    positions.add(resultSet.getString(2));
+                    counties.add(resultSet.getString(3));
+                    states.add(resultSet.getString(4));
+                    votes.add(resultSet.getInt(5));
+                }
             }
         }
         catch (SQLException e) {

@@ -203,9 +203,26 @@ public class PrimaryInterface extends JFrame {
                 }
         );
 
+        //auditor county results stuff
+        JButton auditorResults = new JButton();
+        auditorResults.setText("Auditor County Results");
+        auditorResults.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+//TODO: new gui
+                        ElectionResults rGui = new ElectionResults();
+                        rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        rGui.setSize(600,400);
+                        rGui.setVisible(true);
+
+                    }
+                }
+        );
+
         //election results stuff
         JButton electionResults = new JButton();
-        electionResults.setText("Election Results");
+        electionResults.setText("View Election Results");
         electionResults.addActionListener(
                 new ActionListener() {
                     @Override
@@ -219,6 +236,7 @@ public class PrimaryInterface extends JFrame {
                     }
                 }
         );
+
 
         JPanel auditorLoginPanel1 = new JPanel();
         auditorLoginPanel1.setLayout(new GridLayout(1,5));
@@ -248,7 +266,7 @@ public class PrimaryInterface extends JFrame {
 
         }
         electionResultsPanel1.add(errorA);
-        electionResultsPanel1.add(electionResults);
+        electionResultsPanel1.add(auditorResults);
 
         JPanel electionResultsPanel = new JPanel();
         electionResultsPanel.setLayout(new GridLayout(2,1));
@@ -280,6 +298,7 @@ public class PrimaryInterface extends JFrame {
 
         JPanel voterRegistrationPanel1 = new JPanel();
         voterRegistrationPanel1.add(vReg);
+        voterRegistrationPanel1.add(electionResults);
 
         JPanel errorPanel = new JPanel();
         errorPanel.setLayout(new GridLayout(1,6));
