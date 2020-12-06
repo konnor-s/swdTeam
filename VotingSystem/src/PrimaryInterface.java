@@ -57,7 +57,7 @@ public class PrimaryInterface extends JFrame {
 
                                     Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
                                     Statement statement = connection.createStatement();
-                                    ResultSet rs = statement.executeQuery("SELECT Finalized FRom Ballot WHERE County = '" + countyAField.getText() + "' AND State = '" + stateAField.getText() + "'");
+                                    ResultSet rs = statement.executeQuery("SELECT Finalized FROM Ballot WHERE County = '" + countyAField.getText() + "' AND State = '" + stateAField.getText() + "'");
                                     boolean finalized = true;
                                     finalized = rs.getBoolean(1);
                                     if(!finalized){
