@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public class PrimaryInterface extends JFrame {
     PrimaryInterface(){
         super("National Voting System");
-        setLayout(new GridLayout(8,1,10,20));
+        setLayout(new GridLayout(5,1,10,20));
 
 
         //Auditor login stuff
@@ -85,46 +85,72 @@ public class PrimaryInterface extends JFrame {
                 }
         );
 
-        JPanel auditorLoginPanel = new JPanel();
-        auditorLoginPanel.setLayout(new GridLayout(1,8));
-        auditorLoginPanel.add(auditorLogin);
-        auditorLoginPanel.add(pswrd);
-        auditorLoginPanel.add(pswrField);
-        auditorLoginPanel.add(countyA);
-        auditorLoginPanel.add(countyAField);
-        auditorLoginPanel.add(stateA);
-        auditorLoginPanel.add(stateAField);
-        auditorLoginPanel.add(loginA);
+        JPanel auditorLoginPanel1 = new JPanel();
+        auditorLoginPanel1.setLayout(new GridLayout(1,5));
+        auditorLoginPanel1.add(auditorLogin);
+        auditorLoginPanel1.add(pswrd);
+        auditorLoginPanel1.add(countyA);
+        auditorLoginPanel1.add(stateA);
+        auditorLoginPanel1.add(new JPanel());
 
+        JPanel auditorLoginPanel2 = new JPanel();
+        auditorLoginPanel2.setLayout(new GridLayout(1,5));
+        auditorLoginPanel2.add(new JPanel());
+        auditorLoginPanel2.add(pswrField);
+        auditorLoginPanel2.add(countyAField);
+        auditorLoginPanel2.add(stateAField);
+        auditorLoginPanel2.add(loginA);
+
+        JPanel auditorLoginPanel = new JPanel();
+        auditorLoginPanel.setLayout(new GridLayout(2,1));
+        auditorLoginPanel.add(auditorLoginPanel1);
+        auditorLoginPanel.add(auditorLoginPanel2);
+
+        JPanel electionResultsPanel1 = new JPanel();
+        electionResultsPanel1.setLayout(new GridLayout(1,5));
+        for(int i = 0;i<4;i++){
+            electionResultsPanel1.add(new JPanel());
+
+        }
+        electionResultsPanel1.add(electionResults);
 
         JPanel electionResultsPanel = new JPanel();
-        electionResultsPanel.setLayout(new GridLayout(1,8));
-        for(int i = 0;i<7;i++){
-            electionResultsPanel.add(new JPanel());
+        electionResultsPanel.setLayout(new GridLayout(2,1));
+        electionResultsPanel.add(electionResultsPanel1);
+        electionResultsPanel.add(new JPanel());
 
-        }
-        electionResultsPanel.add(electionResults);
+        JPanel voterLoginPanel1 = new JPanel();
+        voterLoginPanel1.setLayout(new GridLayout(1,5));
+        voterLoginPanel1.add(voterLogin);
+        voterLoginPanel1.add(name);
+        voterLoginPanel1.add(countyV);
+        voterLoginPanel1.add(stateV);
+        voterLoginPanel1.add(new JPanel());
 
+        JPanel voterLoginPanel2 = new JPanel();
+        voterLoginPanel2.setLayout(new GridLayout(1,5));
+        voterLoginPanel2.add(new JPanel());
+        voterLoginPanel2.add(nameField);
+        voterLoginPanel2.add(countyVField);
+        voterLoginPanel2.add(stateVField);
+        voterLoginPanel2.add(vLogin);
 
         JPanel voterLoginPanel = new JPanel();
-        voterLoginPanel.setLayout(new GridLayout(1,8));
-        voterLoginPanel.add(voterLogin);
-        voterLoginPanel.add(name);
-        voterLoginPanel.add(nameField);
-        voterLoginPanel.add(countyV);
-        voterLoginPanel.add(countyVField);
-        voterLoginPanel.add(stateV);
-        voterLoginPanel.add(stateVField);
-        voterLoginPanel.add(vLogin);
+        voterLoginPanel.setLayout(new GridLayout(2,1));
+        voterLoginPanel.add(voterLoginPanel1);
+        voterLoginPanel.add(voterLoginPanel2);
 
+        JPanel voterRegistrationPanel1 = new JPanel();
+        voterRegistrationPanel1.setLayout(new GridLayout(1,5));
+        for(int i = 0;i<4;i++){
+            voterRegistrationPanel1.add(new JPanel());
+        }
+        voterRegistrationPanel1.add(vReg);
 
         JPanel voterRegistrationPanel = new JPanel();
-        voterRegistrationPanel.setLayout(new GridLayout(1,8));
-        for(int i = 0;i<7;i++){
-            voterRegistrationPanel.add(new JPanel());
-        }
-        voterRegistrationPanel.add(vReg);
-
+        voterRegistrationPanel.setLayout(new GridLayout(2,1));
+        voterRegistrationPanel.add(voterRegistrationPanel1);
+        voterRegistrationPanel.add(new JPanel());
 
         add(auditorLoginPanel);
         add(electionResultsPanel);
