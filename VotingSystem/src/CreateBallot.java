@@ -14,6 +14,7 @@ public class CreateBallot extends JFrame {
         JTextField jtfForName = new JTextField("Enter name of candidate");
         JButton jb1 = new JButton("Submit to database");
         JButton jb2 = new JButton("Remove from database");
+        JButton jb3 = new JButton("Preview current ballot for "  + county + ", " + state);
 
         //Submit name & position to database
         jb1.addActionListener(new ActionListener() {
@@ -90,10 +91,23 @@ public class CreateBallot extends JFrame {
             }
         });
 
+        //Preview Ballot for current County and State
+        jb3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Ballot previewBallot = new Ballot(county, state,false);
+                previewBallot.setVisible(true);
+                previewBallot.setSize(1200,800);
+                previewBallot.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            }
+        });
+
+
         add(jtfForName);
         add(jtfForPosition);
         add(jb1);
         add(jb2);
+        add(jb3);
 
 
         //if this table doesn't exist, create it
