@@ -15,6 +15,7 @@ public class CreateBallot extends JFrame {
         JButton jb1 = new JButton("Submit to database");
         JButton jb2 = new JButton("Remove from database");
         JButton jb3 = new JButton("Preview current ballot for "  + county + ", " + state);
+        JButton jb4 = new JButton("Click to finalize results for " + county + ", " + state);
 
         //Submit name & position to database
         jb1.addActionListener(new ActionListener() {
@@ -102,12 +103,34 @@ public class CreateBallot extends JFrame {
             }
         });
 
+        jb4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try{
+                    //Connect to server
+                    Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
+
+                    String tempString = "UPDATE Ballot SET Finalized = ? WHERE County = ? AND State = ?";
+                    PreparedStatement upd = connection.prepareStatement(tempString);
+                    upd.setInt(1,1);
+                    upd.setString(2,county);
+                    upd.setString(3,state);
+                    upd.executeUpdate();
+
+                }
+                catch(SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         add(jtfForName);
         add(jtfForPosition);
         add(jb1);
         add(jb2);
         add(jb3);
+        add(jb4);
 
 
         //if this table doesn't exist, create it
