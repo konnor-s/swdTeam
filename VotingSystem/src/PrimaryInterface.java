@@ -52,7 +52,7 @@ public class PrimaryInterface extends JFrame {
                             }
 
                             if(password.equals(pswrField.getText())) {
-                                CreateBallot bGui = new CreateBallot(countyA.getText(), stateA.getText());
+                                CreateBallot bGui = new CreateBallot(countyAField.getText(), stateAField.getText());
                                 bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                                 bGui.setSize(1200, 800);
                                 bGui.setVisible(true);
