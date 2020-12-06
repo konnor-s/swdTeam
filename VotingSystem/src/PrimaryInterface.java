@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public class PrimaryInterface extends JFrame {
         //Auditor login stuff
         JLabel auditorLogin = new JLabel("County Auditor Login");
         JLabel pswrd = new JLabel("Password");
-        JTextField pswrField = new JTextField("");
+        JPasswordField pswrField = new JPasswordField();
         JLabel countyA = new JLabel("County");
         JTextField countyAField = new JTextField("");
         JLabel stateA = new JLabel("State");
@@ -27,12 +28,39 @@ public class PrimaryInterface extends JFrame {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
+                        if (countyAField.getText().equals("") || stateAField.getText().equals("")) {
+                            errorA.setText("All fields must be filled out!");
+                        }
+                        else{
+                            //Password will be CountyState + 123123123... in ASCII. PolkIowa is QqolKrxc and JohnsonIowa is KqkouroKrxc
+                            //See PasswordTest class
+                            String a = countyAField.getText()+stateAField.getText();
+                            byte[] bytes = new byte[0];
+                            try {
+                                bytes = a.getBytes("US-ASCII");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            byte[] nArray = new byte[]{1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3};
+                            byte[] bytes2 = new byte[a.length()];
+                            for(int i = 0; i < bytes.length;i++){
+                                bytes2[i] = (byte) (bytes[i]+nArray[i]);
+                            }
+                            String password ="";
+                            for(int i: bytes2) {
+                                password += Character.toString((char) i);
+                            }
 
-                        CreateBallot bGui = new CreateBallot(countyA.getText(),stateA.getText());
-                        // bGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        bGui.setSize(1200,800);
-                        bGui.setVisible(true);
-
+                            if(password.equals(pswrField.getText())) {
+                                CreateBallot bGui = new CreateBallot(countyA.getText(), stateA.getText());
+                                bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                bGui.setSize(1200, 800);
+                                bGui.setVisible(true);
+                            }
+                            else{
+                                errorA.setText("Invalid Password");
+                            }
+                        }
                     }
                 }
         );
@@ -127,10 +155,39 @@ public class PrimaryInterface extends JFrame {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-                        ElectionResults rGui = new ElectionResults();
-                        //vGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                        rGui.setSize(600,400);
-                        rGui.setVisible(true);
+                        if (countyAField.getText().equals("") || stateAField.getText().equals("")) {
+                            errorA.setText("All fields must be filled out!");
+                        }
+                        else{
+                            //Password will be CountyState + 123123123... in ASCII. PolkIowa is QqolKrxc and JohnsonIowa is KqkouroKrxc
+                            //See PasswordTest class
+                            String a = countyAField.getText()+stateAField.getText();
+                            byte[] bytes = new byte[0];
+                            try {
+                                bytes = a.getBytes("US-ASCII");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            byte[] nArray = new byte[]{1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3};
+                            byte[] bytes2 = new byte[a.length()];
+                            for(int i = 0; i < bytes.length;i++){
+                                bytes2[i] = (byte) (bytes[i]+nArray[i]);
+                            }
+                            String password ="";
+                            for(int i: bytes2) {
+                                password += Character.toString((char) i);
+                            }
+
+                            if(password.equals(pswrField.getText())) {
+                                ElectionResults rGui = new ElectionResults();
+                                rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                rGui.setSize(600,400);
+                                rGui.setVisible(true);
+                            }
+                            else{
+                                errorA.setText("Invalid Password");
+                            }
+                        }
                     }
                 }
         );
