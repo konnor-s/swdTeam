@@ -6,7 +6,13 @@ import java.io.UnsupportedEncodingException;
 import java.sql.*;
 import java.util.ArrayList;
 
-
+/**
+ * Class which creates the gui for the primary interface.
+ * This interface has an auditor login for them to either create their ballot, or view results.
+ * This has a voter login for them to open the ballot gui and vote.
+ * This has a voter registration button to open that gui.
+ * This has an election results button to open that gui.
+ */
 public class PrimaryInterface extends JFrame {
     PrimaryInterface(){
         super("National Voting System");
@@ -210,12 +216,66 @@ public class PrimaryInterface extends JFrame {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-//TODO: new gui
-                        ElectionResults rGui = new ElectionResults();
-                        rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        rGui.setSize(600,400);
-                        rGui.setVisible(true);
+                        if (countyAField.getText().equals("") || stateAField.getText().equals("")) {
+                            errorA.setText("All fields must be filled out!");
+                        }
+                        else{
+                            //Password will be CountyState + 123123123... in ASCII. PolkIowa is QqolKrxc and JohnsonIowa is KqkouroKrxc
+                            //See PasswordTest class
+                            String a = countyAField.getText()+stateAField.getText();
+                            byte[] bytes = new byte[0];
+                            try {
+                                bytes = a.getBytes("US-ASCII");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            byte[] nArray = new byte[]{1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3};
+                            byte[] bytes2 = new byte[a.length()];
+                            for(int i = 0; i < bytes.length;i++){
+                                bytes2[i] = (byte) (bytes[i]+nArray[i]);
+                            }
+                            String password ="";
+                            for(int i: bytes2) {
+                                password += Character.toString((char) i);
+                            }
 
+                            if(password.equals(pswrField.getText())) {
+                                //check if ballot is already finalized
+                                try {
+
+                                    Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
+                                    Statement statement = connection.createStatement();
+                                    ResultSet rs = statement.executeQuery("SELECT Finalized FROM Ballot WHERE County = '" + countyAField.getText() + "' AND State = '" + stateAField.getText() + "'");
+                                    boolean finalized = true;
+                                    rs.next();
+                                    try {
+                                        finalized = rs.getBoolean(1);
+                                        System.out.println(finalized);
+                                    }
+                                    //If you get an empty set exception, that means the auditor hasn't input any candidates yet, so there are no results to view
+                                    catch (SQLException e){
+                                       e.printStackTrace();
+                                    }
+                                    //If the ballot is finalized, open the gui
+                                    if(finalized){
+                                        CountyResults cGui = new CountyResults(countyAField.getText(),stateAField.getText());
+                                        cGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                        cGui.setSize(600,400);
+                                        cGui.setVisible(true);
+                                    }
+                                    else{
+                                        errorA.setText("Ballot not Finalized");
+                                    }
+
+                                } catch (SQLException e) {
+
+                                    e.printStackTrace();
+                                }
+                            }
+                            else{
+                                errorA.setText("Invalid Password");
+                            }
+                        }
                     }
                 }
         );
