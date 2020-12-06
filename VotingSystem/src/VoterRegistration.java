@@ -71,7 +71,7 @@ public class VoterRegistration extends JFrame {
                                     insert.setString(2, nameT.getText());
                                     insert.setString(3, addressT.getText());
                                     insert.setString(4, countyT.getText());
-                                    insert.setString(5, state.getText());
+                                    insert.setString(5, stateT.getText());
                                     insert.executeUpdate();
                                     message.setText("Success!");
                                 }
