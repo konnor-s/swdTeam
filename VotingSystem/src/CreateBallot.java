@@ -103,6 +103,7 @@ public class CreateBallot extends JFrame {
             }
         });
 
+        //For finalizing votes
         jb4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -116,7 +117,6 @@ public class CreateBallot extends JFrame {
                     upd.setString(2,county);
                     upd.setString(3,state);
                     upd.executeUpdate();
-
                 }
                 catch(SQLException e){
                     e.printStackTrace();
