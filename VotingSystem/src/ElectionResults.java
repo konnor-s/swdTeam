@@ -225,10 +225,16 @@ public class ElectionResults extends JFrame{
                 }
             }
         }
+        double[] percentages = new double[candidates.size()];
+        if(totalVotes != 0){
+            for(int i = 0; i < candidates.size(); i++){
+                percentages[i] = numVotes[i]/totalVotes*100;
+            }
+        }
 
         String text = "Candidates         Votes         Percentage\n";
         for(int i = 0; i < candidates.size(); i++){
-            text += candidates.get(i) + "        " + numVotes[i] + "\n";
+            text += candidates.get(i) + "        " + numVotes[i] + "            " + percentages[i] + "%\n";
         }
         resultsArea.setText(text);
     }
