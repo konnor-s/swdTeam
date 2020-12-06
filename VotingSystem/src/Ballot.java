@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class Ballot extends JFrame {
-    Ballot(String county, String state){
+    Ballot(String county, String state, boolean votable){
         super("Voter Ballot for "+county+", "+ state);
 
 
@@ -27,7 +27,7 @@ public class Ballot extends JFrame {
             Statement statement = connection.createStatement();
 
             //Get list of positions in this county
-            ResultSet rs = statement.executeQuery("SELECT Position FROM Ballot WHERE County = '" + county + "' AND State = '" + state+"'");
+            ResultSet rs = statement.executeQuery("SELECT Position FROM Ballot WHERE County = '" + county + "' AND State = '" + state + "'");
             ArrayList pos = new ArrayList<String>();
             while (rs.next()) {
                 if (!pos.contains(rs.getString(1))) {
@@ -42,7 +42,7 @@ public class Ballot extends JFrame {
                 add(new JLabel((String) pos.get(i)));
 
                 //get list of choice for this position
-                rs = statement.executeQuery("SELECT Choice FROM Ballot WHERE Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state+"'");
+                rs = statement.executeQuery("SELECT Choice FROM Ballot WHERE Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state + "'");
                 while (rs.next()) {
                     choices.add(rs.getString(1));
                 }
@@ -61,41 +61,42 @@ public class Ballot extends JFrame {
                 arrayOfChoices.add(choices);
                 arrayOfButtons.add(buttons);
             }
-            JButton submit = new JButton("Submit Votes");
-            add(submit);
-            submit.addActionListener(
-                    new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent actionEvent) {
-                            //System.out.println("a");
-                            for(int i = 0; i < arrayOfButtons.size(); i++){
-                                //System.out.println("i="+i);
-                                for(int j = 0; j < ((ArrayList) (arrayOfButtons.get(i))).size(); j++){
-                                    //System.out.println("j="+j);
-                                    if(((JRadioButton) ((ArrayList) (arrayOfButtons.get(i))).get(j)).isSelected()){
-                                        String choice = (String) ((ArrayList) arrayOfChoices.get(i)).get(j);
-                                        //System.out.println(choice);
-                                        try {
-                                            ResultSet rs = statement.executeQuery("SELECT Votes FROM Ballot WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state+"'");
-                                            rs.next();
-                                            int votes = rs.getInt(1) + 1;
-                                            Statement statement = connection.createStatement();
-                                            statement.execute("UPDATE Ballot SET Votes = '"+votes + "' WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state+"'");
+            if (votable) {
+                JButton submit = new JButton("Submit Votes");
+                add(submit);
+                submit.addActionListener(
+                        new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent actionEvent) {
+                                //System.out.println("a");
+                                for (int i = 0; i < arrayOfButtons.size(); i++) {
+                                    //System.out.println("i="+i);
+                                    for (int j = 0; j < ((ArrayList) (arrayOfButtons.get(i))).size(); j++) {
+                                        //System.out.println("j="+j);
+                                        if (((JRadioButton) ((ArrayList) (arrayOfButtons.get(i))).get(j)).isSelected()) {
+                                            String choice = (String) ((ArrayList) arrayOfChoices.get(i)).get(j);
+                                            //System.out.println(choice);
+                                            try {
+                                                ResultSet rs = statement.executeQuery("SELECT Votes FROM Ballot WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state + "'");
+                                                rs.next();
+                                                int votes = rs.getInt(1) + 1;
+                                                Statement statement = connection.createStatement();
+                                                statement.execute("UPDATE Ballot SET Votes = '" + votes + "' WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state + "'");
+
+                                            } catch (SQLException e) {
+                                                e.printStackTrace();
+                                            }
 
                                         }
-                                        catch (SQLException e) {
-                                            e.printStackTrace();
-                                        }
-
                                     }
                                 }
+                                Ballot.super.dispose();
                             }
-                            //Ballot.super.dispose();
                         }
-                    }
-            );
+                );
 
 
+            }
         }
         catch (SQLException e) {
             e.printStackTrace();
