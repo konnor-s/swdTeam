@@ -28,7 +28,7 @@ public class PrimaryInterface extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
 
-                        CreateBallot bGui = new CreateBallot(countyA.getText(),stateA.getText());
+                        CreateBallot bGui = new CreateBallot(countyAField.getText(),stateAField.getText());
                         // bGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                         bGui.setSize(1200,800);
                         bGui.setVisible(true);
