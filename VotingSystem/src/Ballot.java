@@ -78,14 +78,22 @@ public class Ballot extends JFrame {
                                         if (((JRadioButton) ((ArrayList) (arrayOfButtons.get(i))).get(j)).isSelected()) {
                                             String choice = (String) ((ArrayList) arrayOfChoices.get(i)).get(j);
                                             try {
-                                                ResultSet rs = statement.executeQuery("SELECT Votes FROM Ballot WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state + "'");
-                                                rs.next();
-                                                int votes = rs.getInt(1) + 1;
-                                                Statement statement = connection.createStatement();
-                                                statement.execute("UPDATE Ballot SET Votes = '" + votes + "' WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state + "'");
+                                                //Check if this person has already voted
+                                                boolean voted = true;
+                                                ResultSet rs1 = statement.executeQuery("SELECT Voted FROM VoterRegistry WHERE License = '" + vID + "' AND County = '" + county + "' AND State = '" + state + "'");
+                                                rs1.next();
+                                                voted = rs1.getBoolean(1);
 
-                                                Statement statement2 = connection.createStatement();
-                                                statement2.execute("UPDATE VoterRegistry SET Voted = '1' WHERE License = '" + vID + "'");
+                                                if(!voted) {
+                                                    ResultSet rs = statement.executeQuery("SELECT Votes FROM Ballot WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state + "'");
+                                                    rs.next();
+                                                    int votes = rs.getInt(1) + 1;
+                                                    Statement statement = connection.createStatement();
+                                                    statement.execute("UPDATE Ballot SET Votes = '" + votes + "' WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state + "'");
+
+                                                    Statement statement2 = connection.createStatement();
+                                                    statement2.execute("UPDATE VoterRegistry SET Voted = '1' WHERE License = '" + vID + "'");
+                                                }
 
 
                                             } catch (SQLException e) {
