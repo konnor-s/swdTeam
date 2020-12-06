@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class CreateBallot extends JFrame {
     CreateBallot(String county, String state){
         super("Create Ballot for "+county+", "+ state);
-        setLayout(new GridLayout(5,1,10,20));
+        setLayout(new GridLayout(17,20,20,20));
 
         //Creating GUI objects
         JTextField jtfForPosition = new JTextField("Enter title of position");
