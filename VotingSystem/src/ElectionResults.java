@@ -5,6 +5,9 @@ import java.awt.event.ItemEvent;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * Class for displaying election results
+ */
 public class ElectionResults extends JFrame{
     private ArrayList<String> choices;
     private ArrayList<String> positions;
@@ -19,14 +22,16 @@ public class ElectionResults extends JFrame{
     private String county;
     private JTextArea resultsArea;
 
+
     public ElectionResults(){
         super("Election Results");
-        getData();
+        getData(); // get data from database
         county = "";
         selectionPanel = new JPanel();
         selectionPanel.setLayout(new FlowLayout());
         add(selectionPanel, BorderLayout.NORTH);
 
+        // Get list of states with certified results
         ArrayList<String> regions = new ArrayList<>();
         regions.add("Select Region");
         regions.add("All States");
@@ -35,6 +40,7 @@ public class ElectionResults extends JFrame{
                 regions.add(states.get(i));
             }
         }
+        // Add list of regions to JComboBox
         JComboBox regionBox = new JComboBox();
         for(int i = 0; i < regions.size(); i++){
             regionBox.addItem(regions.get(i));
@@ -46,6 +52,11 @@ public class ElectionResults extends JFrame{
         selectionPanel.add(countyBox);
         regionBox.addItemListener(
                 new ItemListener(){
+                    /**
+                     * Method called when item selected in regionBox.
+                     * Sets state and calls stateSelected
+                     * @param event ItemEvent
+                     */
                     @Override
                     public void itemStateChanged(ItemEvent event){
                         if(event.getStateChange() == ItemEvent.SELECTED) {
@@ -57,6 +68,11 @@ public class ElectionResults extends JFrame{
         );
         positionBox.addItemListener(
                 new ItemListener(){
+                    /**
+                     * Method called when item selected in positionBox.
+                     * Sets position and calls getResults
+                     * @param event ItemEvent
+                     */
                     @Override
                     public void itemStateChanged(ItemEvent event){
                         if(event.getStateChange() == ItemEvent.SELECTED) {
@@ -68,6 +84,11 @@ public class ElectionResults extends JFrame{
         );
         countyBox.addItemListener(
                 new ItemListener(){
+                    /**
+                     * Method called when item selected in countyBox.
+                     * Sets county and calls getResults
+                     * @param event ItemEvent
+                     */
                     @Override
                     public void itemStateChanged(ItemEvent event){
                         if(event.getStateChange() == ItemEvent.SELECTED) {
@@ -83,6 +104,9 @@ public class ElectionResults extends JFrame{
 
     }
 
+    /**
+     * Method connects to database to get results and stores data in ArrayLists
+     */
     public void getData(){
         final String SELECT_QUERY = "SELECT Choice, Position, County, State, Votes FROM Ballot";
         choices = new ArrayList<>();
@@ -92,12 +116,15 @@ public class ElectionResults extends JFrame{
         votes = new ArrayList<>();
 
         try (
+                // connect to database
                 Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
+                // create Statement for querying database
                 Statement statement = connection.createStatement();
+                // Query database
                 ResultSet resultSet = statement.executeQuery(SELECT_QUERY))
         {
+            // process query results
             ResultSetMetaData metaData = resultSet.getMetaData();
-            int numColumns = metaData.getColumnCount();
             while (resultSet.next()){
                 choices.add(String.valueOf(resultSet.getObject(1)));
                 positions.add(String.valueOf(resultSet.getObject(2)));
@@ -111,6 +138,9 @@ public class ElectionResults extends JFrame{
         }
     }
 
+    /**
+     * Method called when state is selected in regionBox. Determine what positions/counties have results and sets position and county JComboBoxes with options.
+     */
     public void stateSelected(){
 
         ArrayList<String> posList = new ArrayList<>();
@@ -119,15 +149,16 @@ public class ElectionResults extends JFrame{
         ArrayList<String> countyList1 = new ArrayList<>();
         posList1.add("Select Position");
 
-
-        // Get list of positions and counties
+        // If All States selected add all positions to list
         if(state.equals("All States")){
             for(int i = 0; i < states.size(); i++){
                 if(!posList1.contains(positions.get(i))){
                     posList1.add(positions.get(i));
                 }
             }
-        }else{
+        }
+        // else add all positions and counties with results to list if in state selected
+        else{
             for(int i = 0; i < states.size(); i++){
                 if(states.get(i).equals(state)){
                     posList.add(positions.get(i));
@@ -146,7 +177,7 @@ public class ElectionResults extends JFrame{
             }
         }
 
-
+        // Remove items from JComboBoxes then fill with new options
         positionBox.removeAllItems();
         for(int i = 0; i < posList1.size(); i ++){
             positionBox.addItem(posList1.get(i));
@@ -159,11 +190,14 @@ public class ElectionResults extends JFrame{
 
     }
 
+    /**
+     * Method counts votes for location and position of interest and prints results of election
+     */
     public void getResults(){
         ArrayList<String> list = new ArrayList<>();
         ArrayList<String> candidates = new ArrayList<>();
 
-
+        // Get list of candidates on ballots
         if(state.equals("All States")){
             for(int i = 0; i < votes.size(); i++){
                 if(positions.get(i).equals(position)){
@@ -183,14 +217,15 @@ public class ElectionResults extends JFrame{
                 }
             }
         }
-
+        // Remove duplicates from list by creating new arraylist of candidates
         for(int i = 0; i < list.size(); i++){
             if(!candidates.contains(list.get(i))){
                 candidates.add(list.get(i));
             }
         }
-        int[] numVotes = new int[candidates.size()];
-        double totalVotes = 0;
+        int[] numVotes = new int[candidates.size()]; // array to store number of votes for each candidate
+        double totalVotes = 0; // count total number of votes
+        // Loop through data and determine number of votes for each candidate
         if(state.equals("All States")){
             for(int i = 0; i < votes.size(); i++){
                 if(positions.get(i).equals(position)){
@@ -225,17 +260,19 @@ public class ElectionResults extends JFrame{
                 }
             }
         }
+        // Calculate percent of votes for each candidate
         double[] percentages = new double[candidates.size()];
-        if(totalVotes != 0){
+        if(totalVotes != 0){ // make sure to avoid division by zero
             for(int i = 0; i < candidates.size(); i++){
                 percentages[i] = numVotes[i]/totalVotes*100;
             }
         }
 
+        // Create string of results
         String text = "Candidates         Votes         Percentage\n";
         for(int i = 0; i < candidates.size(); i++){
             text += candidates.get(i) + "        " + numVotes[i] + "            " + percentages[i] + "%\n";
         }
-        resultsArea.setText(text);
+        resultsArea.setText(text); // set text area with results
     }
 }
