@@ -211,7 +211,7 @@ public class PrimaryInterface extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
 //TODO: new gui
-                        ElectionResults rGui = new ElectionResults();
+                        CountyResults rGui = new CountyResults(countyAField.getText(), stateAField.getText());
                         rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         rGui.setSize(600,400);
                         rGui.setVisible(true);
