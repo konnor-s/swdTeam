@@ -8,12 +8,13 @@ import java.util.ArrayList;
 /**
  * The CreateBallot.java class is responsible for putting the candidates onto the ballot. When an auditor logs in,
  * they will have the options to: add candidate to ballot, remove candidate from ballot, preview the current ballot, and
- * finalize the votes. This is done via 4 JButtons with ActionListeners.
+ * finalize the votes. This is done via 4 JButtons with ActionListeners. Inside of the ActionListeners, the database is updated
+ * respective to the button that is clicked.
  */
 public class CreateBallot extends JFrame {
     CreateBallot(String county, String state){
         super("Create Ballot for "+county+", "+ state);
-        setLayout(new FlowLayout());
+        setLayout(new GridLayout(5,1,10,20));
 
         //Creating GUI objects
         JTextField jtfForPosition = new JTextField("Enter title of position");
