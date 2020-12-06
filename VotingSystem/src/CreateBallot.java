@@ -95,7 +95,7 @@ public class CreateBallot extends JFrame {
         jb3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Ballot previewBallot = new Ballot(county, state,false);
+                Ballot previewBallot = new Ballot(county, state,false,"");
                 previewBallot.setVisible(true);
                 previewBallot.setSize(1200,800);
                 previewBallot.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

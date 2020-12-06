@@ -97,8 +97,6 @@ public class PrimaryInterface extends JFrame {
                             boolean exists = false;
                             //Check if this license is already in the database
                             for (Object i : ids) {
-                                System.out.println("i"+i);
-                                System.out.println(idField.getText());
                                 if (idField.getText().equals(i)) {
                                     exists = true;
                                 }
@@ -108,11 +106,12 @@ public class PrimaryInterface extends JFrame {
                             if(exists) {
                                 ResultSet rs2 = statement.executeQuery("SELECT Voted FROM VoterRegistry WHERE License = '" + idField.getText() + "' AND Name = '" + nameField.getText() + "' AND County = '" + countyVField.getText() + "' AND State = '" + stateVField.getText() + "'");
                                 rs2.next();
-                                voted = rs2.next();
+                                voted = rs2.getBoolean(1);
+                                System.out.println(voted);
                             }
                             connection.close();
                             if(!voted){
-                                Ballot vGui = new Ballot(countyVField.getText(), stateVField.getText(), true);
+                                Ballot vGui = new Ballot(countyVField.getText(), stateVField.getText(), true, idField.getText());
                                 vGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                                 vGui.setSize(600, 800);
                                 vGui.setVisible(true);
