@@ -34,10 +34,18 @@ public class ElectionResults extends JFrame{
                 "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
 
          */
+        ArrayList<String> regions = new ArrayList<>();
+        regions.add("Select Region");
+        regions.add("All States");
         for(int i = 0; i < states.size(); i++){
-
+            if(!regions.contains(states.get(i))){
+                regions.add(states.get(i));
+            }
         }
-        JComboBox regionBox = new JComboBox(regions);
+        JComboBox regionBox = new JComboBox();
+        for(int i = 0; i < regions.size(); i++){
+            regionBox.addItem(regions.get(i));
+        }
         selectionPanel.add(regionBox);
         positionBox = new JComboBox();
         selectionPanel.add(positionBox);
