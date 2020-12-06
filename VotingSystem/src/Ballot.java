@@ -17,8 +17,9 @@ public class Ballot extends JFrame {
         rPanel.setLayout(new FlowLayout());
 
         ArrayList groups = new ArrayList<ButtonGroup>();
-        ArrayList arrayOfChoices = new ArrayList<ArrayList>();
-        ArrayList arrayOfChoiceButtons = new ArrayList<ArrayList>();
+
+        ArrayList arrayOfChoices = new ArrayList<ArrayList>();//arraylist that holds arraylists of choices per position
+        ArrayList arrayOfButtons = new ArrayList<ArrayList>();//arraylist that holds arraylists of buttons per position corresponding to arrayOfChoices
 
         try {
             //Connect to server
@@ -33,16 +34,11 @@ public class Ballot extends JFrame {
                     pos.add(rs.getString(1));
                 }
             }
-            int posLength = pos.size();
 
-
-
-            for (int i = 0; i < posLength; i++) {
+            for (int i = 0; i < pos.size(); i++) {
                 groups.add(new ButtonGroup());
                 ArrayList choices = new ArrayList<String>();
                 ArrayList buttons = new ArrayList<JButton>();
-                ArrayList labels = new ArrayList<JRadioButton>();
-                ArrayList panels = new ArrayList<JPanel>();
                 add(new JLabel((String) pos.get(i)));
 
                 //get list of choice for this position
@@ -63,21 +59,47 @@ public class Ballot extends JFrame {
 
                 }
                 arrayOfChoices.add(choices);
+                arrayOfButtons.add(buttons);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        JButton submit = new JButton("Submit Votes");
-        add(submit);
-        submit.addActionListener(
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        for(Object b:arrayOfChoiceButtons){
+            JButton submit = new JButton("Submit Votes");
+            add(submit);
+            submit.addActionListener(
+                    new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent actionEvent) {
+                            //System.out.println("a");
+                            for(int i = 0; i < arrayOfButtons.size(); i++){
+                                //System.out.println("i="+i);
+                                for(int j = 0; j < ((ArrayList) (arrayOfButtons.get(i))).size(); j++){
+                                    //System.out.println("j="+j);
+                                    if(((JRadioButton) ((ArrayList) (arrayOfButtons.get(i))).get(j)).isSelected()){
+                                        String choice = (String) ((ArrayList) arrayOfChoices.get(i)).get(j);
+                                        //System.out.println(choice);
+                                        try {
+                                            ResultSet rs = statement.executeQuery("SELECT Votes FROM Ballot WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state+"'");
+                                            rs.next();
+                                            int votes = rs.getInt(1) + 1;
+                                            Statement statement = connection.createStatement();
+                                            statement.execute("UPDATE Ballot SET Votes = '"+votes + "' WHERE Choice = '" + choice + "' AND Position ='" + pos.get(i) + "' AND County = '" + county + "' AND State = '" + state+"'");
 
+                                        }
+                                        catch (SQLException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                }
+                            }
+                            //Ballot.super.dispose();
                         }
                     }
-                }
-        );
+            );
+
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }
