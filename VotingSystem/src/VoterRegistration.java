@@ -5,6 +5,10 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * Class responsible for displaying and dealing with Voter Registration. Checks if voter is already in database.
+ * If not, adds this voter to the database.
+ */
 public class VoterRegistration extends JFrame {
     VoterRegistration(){
         super("Voter Registration");
