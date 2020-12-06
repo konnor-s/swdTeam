@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
 
+
 public class PrimaryInterface extends JFrame {
     PrimaryInterface(){
         super("National Voting System");
@@ -19,6 +20,7 @@ public class PrimaryInterface extends JFrame {
         JTextField countyAField = new JTextField("");
         JLabel stateA = new JLabel("State");
         JTextField stateAField = new JTextField("");
+        JLabel errorA = new JLabel("");
         JButton loginA = new JButton();
         loginA.setText("Auditor Login");
         loginA.addActionListener(
@@ -45,6 +47,7 @@ public class PrimaryInterface extends JFrame {
         JTextField countyVField = new JTextField();
         JLabel stateV = new JLabel("State");
         JTextField stateVField = new JTextField();
+        JLabel errorV = new JLabel("");
         JButton vLogin = new JButton();
         vLogin.setText("Voter Login");
         vLogin.addActionListener(
@@ -79,15 +82,19 @@ public class PrimaryInterface extends JFrame {
                                 rs2.next();
                                 voted = rs2.next();
                             }
-
+                            connection.close();
                             if(!voted){
                                 Ballot vGui = new Ballot(countyVField.getText(), stateVField.getText(), true);
                                 vGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                                 vGui.setSize(600, 800);
                                 vGui.setVisible(true);
                             }
-                            else{
-                                //print out invalid login
+                            else {
+                                if (!exists) {
+                                    errorV.setText("Voter not in Registry");
+                                } else {
+                                    errorV.setText("Vote already Cast!");
+                                }
                             }
 
                         } catch (SQLException e) {
@@ -151,10 +158,11 @@ public class PrimaryInterface extends JFrame {
 
         JPanel electionResultsPanel1 = new JPanel();
         electionResultsPanel1.setLayout(new GridLayout(1,5));
-        for(int i = 0;i<4;i++){
+        for(int i = 0;i<3;i++){
             electionResultsPanel1.add(new JPanel());
 
         }
+        electionResultsPanel1.add(errorA);
         electionResultsPanel1.add(electionResults);
 
         JPanel electionResultsPanel = new JPanel();
@@ -186,17 +194,23 @@ public class PrimaryInterface extends JFrame {
         voterLoginPanel.add(voterLoginPanel2);
 
         JPanel voterRegistrationPanel1 = new JPanel();
-        //voterRegistrationPanel1.setLayout(new GridLayout(1,5));
         voterRegistrationPanel1.add(vReg);
-/*
-        JPanel voterRegistrationPanel = new JPanel();
-        voterRegistrationPanel.setLayout(new GridLayout(2,1));
-        voterRegistrationPanel.add(voterRegistrationPanel1);
-        voterRegistrationPanel.add(new JPanel());
-*/
+
+        JPanel errorPanel = new JPanel();
+        errorPanel.setLayout(new GridLayout(1,6));
+        for(int i = 0;i<4;i++){
+            errorPanel.add(new JPanel());
+        }
+        errorPanel.add(errorV);
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new GridLayout(2,1));
+        bottomPanel.add(errorPanel);
+        bottomPanel.add(voterRegistrationPanel1);
+
         add(auditorLoginPanel);
         add(electionResultsPanel);
         add(voterLoginPanel);
-        add(voterRegistrationPanel1);
+        add(bottomPanel);
     }
 }
