@@ -52,10 +52,30 @@ public class PrimaryInterface extends JFrame {
                             }
 
                             if(password.equals(pswrField.getText())) {
-                                CreateBallot bGui = new CreateBallot(countyA.getText(), stateA.getText());
-                                bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                                bGui.setSize(1200, 800);
-                                bGui.setVisible(true);
+                                //check if ballot is already finalized
+                                try {
+
+                                    Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
+                                    Statement statement = connection.createStatement();
+                                    ResultSet rs = statement.executeQuery("SELECT Finalized FRom Ballot WHERE County = '" + countyAField.getText() + "' AND State = '" + stateAField.getText() + "'");
+                                    boolean finalized = true;
+                                    finalized = rs.getBoolean(1);
+                                    if(!finalized){
+                                        CreateBallot bGui = new CreateBallot(countyAField.getText(), stateAField.getText());
+                                        bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                        bGui.setSize(1200, 800);
+                                        bGui.setVisible(true);
+                                    }
+                                    else{
+                                        errorA.setText("Ballot already Finalized");
+                                    }
+
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+
+
+
                             }
                             else{
                                 errorA.setText("Invalid Password");
@@ -107,7 +127,7 @@ public class PrimaryInterface extends JFrame {
                                 ResultSet rs2 = statement.executeQuery("SELECT Voted FROM VoterRegistry WHERE License = '" + idField.getText() + "' AND Name = '" + nameField.getText() + "' AND County = '" + countyVField.getText() + "' AND State = '" + stateVField.getText() + "'");
                                 rs2.next();
                                 voted = rs2.getBoolean(1);
-                                System.out.println(voted);
+
                             }
                             connection.close();
                             if(!voted){
@@ -154,39 +174,12 @@ public class PrimaryInterface extends JFrame {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-                        if (countyAField.getText().equals("") || stateAField.getText().equals("")) {
-                            errorA.setText("All fields must be filled out!");
-                        }
-                        else{
-                            //Password will be CountyState + 123123123... in ASCII. PolkIowa is QqolKrxc and JohnsonIowa is KqkouroKrxc
-                            //See PasswordTest class
-                            String a = countyAField.getText()+stateAField.getText();
-                            byte[] bytes = new byte[0];
-                            try {
-                                bytes = a.getBytes("US-ASCII");
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            byte[] nArray = new byte[]{1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3};
-                            byte[] bytes2 = new byte[a.length()];
-                            for(int i = 0; i < bytes.length;i++){
-                                bytes2[i] = (byte) (bytes[i]+nArray[i]);
-                            }
-                            String password ="";
-                            for(int i: bytes2) {
-                                password += Character.toString((char) i);
-                            }
 
-                            if(password.equals(pswrField.getText())) {
-                                ElectionResults rGui = new ElectionResults();
-                                rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                                rGui.setSize(600,400);
-                                rGui.setVisible(true);
-                            }
-                            else{
-                                errorA.setText("Invalid Password");
-                            }
-                        }
+                        ElectionResults rGui = new ElectionResults();
+                        rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        rGui.setSize(600,400);
+                        rGui.setVisible(true);
+
                     }
                 }
         );
