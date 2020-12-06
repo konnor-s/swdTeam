@@ -59,7 +59,19 @@ public class PrimaryInterface extends JFrame {
                                     Statement statement = connection.createStatement();
                                     ResultSet rs = statement.executeQuery("SELECT Finalized FROM Ballot WHERE County = '" + countyAField.getText() + "' AND State = '" + stateAField.getText() + "'");
                                     boolean finalized = true;
-                                    finalized = rs.getBoolean(1);
+                                    rs.next();
+                                    try {
+                                        finalized = rs.getBoolean(1);
+                                        System.out.println(finalized);
+                                    }
+                                    //If you get an empty set exception, that means the auditor hasn't input any candidates yet, so the gui should open.
+                                    catch (SQLException e){
+                                        CreateBallot bGui = new CreateBallot(countyAField.getText(), stateAField.getText());
+                                        bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                        bGui.setSize(1200, 800);
+                                        bGui.setVisible(true);
+                                    }
+                                    //If the ballot is not finalized, open the gui
                                     if(!finalized){
                                         CreateBallot bGui = new CreateBallot(countyAField.getText(), stateAField.getText());
                                         bGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,11 +83,9 @@ public class PrimaryInterface extends JFrame {
                                     }
 
                                 } catch (SQLException e) {
+
                                     e.printStackTrace();
                                 }
-
-
-
                             }
                             else{
                                 errorA.setText("Invalid Password");
@@ -129,12 +139,38 @@ public class PrimaryInterface extends JFrame {
                                 voted = rs2.getBoolean(1);
 
                             }
-                            connection.close();
+                            //If he hasn't voted, test if ballot is finalized
                             if(!voted){
-                                Ballot vGui = new Ballot(countyVField.getText(), stateVField.getText(), true, idField.getText());
-                                vGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                                vGui.setSize(600, 800);
-                                vGui.setVisible(true);
+
+                                ResultSet rs3 = statement.executeQuery("SELECT Finalized FROM Ballot WHERE County = '" + countyVField.getText() + "' AND State = '" + stateVField.getText() + "'");
+                                boolean finalized = true;
+                                rs3.next();
+                                try {
+                                    finalized = rs3.getBoolean(1);
+                                }
+                                //if there are no entries, ballot isn't finalized
+                                catch(SQLException e){
+                                    finalized = false;
+                                    e.printStackTrace();
+                                }
+                                //if it is finalized, check if it is certified
+                                if(finalized) {
+                                    ResultSet rs1 = statement.executeQuery("SELECT Certified FROM Ballot WHERE County = '" + countyVField.getText() + "' AND State = '" + stateVField.getText() + "'");
+                                    boolean certified = true;
+                                    rs1.next();
+                                    certified = rs1.getBoolean(1);
+                                    if (!certified) {
+                                        Ballot vGui = new Ballot(countyVField.getText(), stateVField.getText(), true, idField.getText());
+                                        vGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                                        vGui.setSize(600, 800);
+                                        vGui.setVisible(true);
+                                    } else {
+                                        errorV.setText("Results Already Certified");
+                                    }
+                                }
+                                else{
+                                    errorV.setText("Ballot not Finalized");
+                                }
                             }
                             else {
                                 if (!exists) {
@@ -167,9 +203,26 @@ public class PrimaryInterface extends JFrame {
                 }
         );
 
+        //auditor county results stuff
+        JButton auditorResults = new JButton();
+        auditorResults.setText("Auditor County Results");
+        auditorResults.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+//TODO: new gui
+                        ElectionResults rGui = new ElectionResults();
+                        rGui.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        rGui.setSize(600,400);
+                        rGui.setVisible(true);
+
+                    }
+                }
+        );
+
         //election results stuff
         JButton electionResults = new JButton();
-        electionResults.setText("Election Results");
+        electionResults.setText("View Election Results");
         electionResults.addActionListener(
                 new ActionListener() {
                     @Override
@@ -183,6 +236,7 @@ public class PrimaryInterface extends JFrame {
                     }
                 }
         );
+
 
         JPanel auditorLoginPanel1 = new JPanel();
         auditorLoginPanel1.setLayout(new GridLayout(1,5));
@@ -212,7 +266,7 @@ public class PrimaryInterface extends JFrame {
 
         }
         electionResultsPanel1.add(errorA);
-        electionResultsPanel1.add(electionResults);
+        electionResultsPanel1.add(auditorResults);
 
         JPanel electionResultsPanel = new JPanel();
         electionResultsPanel.setLayout(new GridLayout(2,1));
@@ -244,6 +298,7 @@ public class PrimaryInterface extends JFrame {
 
         JPanel voterRegistrationPanel1 = new JPanel();
         voterRegistrationPanel1.add(vReg);
+        voterRegistrationPanel1.add(electionResults);
 
         JPanel errorPanel = new JPanel();
         errorPanel.setLayout(new GridLayout(1,6));
