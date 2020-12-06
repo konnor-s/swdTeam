@@ -13,8 +13,10 @@ public class ElectionResults extends JFrame{
     private ArrayList<Integer> votes;
     private JPanel selectionPanel;
     private JComboBox positionBox;
+    private JComboBox countyBox;
     private String state;
     private String position;
+    private String county;
     private JTextArea resultsArea;
 
     public ElectionResults(){
@@ -23,18 +25,32 @@ public class ElectionResults extends JFrame{
         selectionPanel = new JPanel();
         selectionPanel.setLayout(new FlowLayout());
         add(selectionPanel, BorderLayout.NORTH);
-
-
+        /*
         String[] regions = {"Select Region", "All States", "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
                 "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
                 "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
                 "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina",
                 "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
                 "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
-        JComboBox regionBox = new JComboBox(regions);
+
+         */
+        ArrayList<String> regions = new ArrayList<>();
+        regions.add("Select Region");
+        regions.add("All States");
+        for(int i = 0; i < states.size(); i++){
+            if(!regions.contains(states.get(i))){
+                regions.add(states.get(i));
+            }
+        }
+        JComboBox regionBox = new JComboBox();
+        for(int i = 0; i < regions.size(); i++){
+            regionBox.addItem(regions.get(i));
+        }
         selectionPanel.add(regionBox);
         positionBox = new JComboBox();
         selectionPanel.add(positionBox);
+        countyBox = new JComboBox();
+        selectionPanel.add(countyBox);
         regionBox.addItemListener(
                 new ItemListener(){
                     @Override
@@ -52,6 +68,17 @@ public class ElectionResults extends JFrame{
                     public void itemStateChanged(ItemEvent event){
                         if(event.getStateChange() == ItemEvent.SELECTED) {
                             position = String.valueOf(positionBox.getSelectedItem());
+                            getResults();
+                        }
+                    }
+                }
+        );
+        countyBox.addItemListener(
+                new ItemListener(){
+                    @Override
+                    public void itemStateChanged(ItemEvent event){
+                        if(event.getStateChange() == ItemEvent.SELECTED) {
+                            county = String.valueOf(countyBox.getSelectedItem());
                             getResults();
                         }
                     }
@@ -93,30 +120,48 @@ public class ElectionResults extends JFrame{
 
     public void stateSelected(){
 
-        ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> posList = new ArrayList<>();
+        ArrayList<String> countyList = new ArrayList<>();
         // get list of all positions in state
         for(int i = 0; i < states.size(); i++){
             if(states.get(i).equals(state)){
-                list.add(positions.get(i));
+                posList.add(positions.get(i));
+                countyList.add(counties.get(i));
             }
         }
         // Remove duplicates
-        ArrayList<String> statePositions = new ArrayList<>();
-        for(int i = 0; i < list.size(); i ++){
-            if(!statePositions.contains(list.get(i))){
-                statePositions.add(list.get(i));
+        ArrayList<String> posList1 = new ArrayList<>();
+        ArrayList<String> countyList1 = new ArrayList<>();
+        posList1.add("Select Position");
+        countyList1.add("Select County");
+        countyList1.add("All Counties");
+        for(int i = 0; i < posList.size(); i ++){
+            if(!posList1.contains(posList.get(i))){
+                posList1.add(posList.get(i));
+            }
+            if(!countyList1.contains(countyList.get(i))){
+                countyList1.add(countyList.get(i));
             }
         }
         if(positionBox.getItemCount()>0){
             positionBox.removeAllItems();
         }
-        for(int i = 0; i < statePositions.size(); i ++){
-            positionBox.addItem(statePositions.get(i));
+        for(int i = 0; i < posList1.size(); i ++){
+            positionBox.addItem(posList1.get(i));
+        }
+        if(countyBox.getItemCount()>0){
+            countyBox.removeAllItems();
+        }
+        for(int i = 0; i < countyList1.size(); i++){
+            countyBox.addItem(countyList1.get(i));
         }
 
     }
 
     public void getResults(){
+        if(state.equals("All States")){
+
+        }
         ArrayList<String> list = new ArrayList<>();
         for(int i = 0; i < votes.size(); i++){
             if(states.get(i).equals(state) && positions.get(i).equals(position)){
@@ -130,8 +175,10 @@ public class ElectionResults extends JFrame{
             }
         }
         int[] numVotes = new int[candidates.size()];
+        double totalVotes = 0;
         for(int i = 0; i < votes.size(); i++) {
             if (states.get(i).equals(state) && positions.get(i).equals(position)) {
+                totalVotes += votes.get(i);
                 for (int j = 0; j < candidates.size(); j++) {
                     if(candidates.get(j).equals(choices.get(i))){
                         numVotes[j] += votes.get(i);
@@ -140,7 +187,7 @@ public class ElectionResults extends JFrame{
                 }
             }
         }
-        String text = "Candidates         Votes\n";
+        String text = "Candidates         Votes         Percentage\n";
         for(int i = 0; i < candidates.size(); i++){
             text += candidates.get(i) + "        " + numVotes[i] + "\n";
         }
