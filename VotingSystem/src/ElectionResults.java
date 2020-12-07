@@ -20,7 +20,7 @@ public class ElectionResults extends JFrame{
     private String state;
     private String position;
     private String county;
-    private JTextArea resultsArea;
+    private JPanel resultsPanel;
 
 
     public ElectionResults(){
@@ -30,6 +30,8 @@ public class ElectionResults extends JFrame{
         selectionPanel = new JPanel();
         selectionPanel.setLayout(new FlowLayout());
         add(selectionPanel, BorderLayout.NORTH);
+        resultsPanel = new JPanel();
+        add(resultsPanel, BorderLayout.CENTER);
 
         // Get list of states with certified results
         ArrayList<String> regions = new ArrayList<>();
@@ -98,9 +100,6 @@ public class ElectionResults extends JFrame{
                     }
                 }
         );
-
-        resultsArea = new JTextArea();
-        add(resultsArea, BorderLayout.CENTER);
 
     }
 
@@ -269,12 +268,20 @@ public class ElectionResults extends JFrame{
                 percentages[i] = numVotes[i]/totalVotes*100;
             }
         }
-
-        // Create string of results
-        String text = "Candidates         Votes         Percentage\n";
+        // reomve components from resultsPanel then add new ones
+        resultsPanel.removeAll();
+        resultsPanel.revalidate();
+        resultsPanel.repaint();
+        resultsPanel.setLayout(new GridLayout(candidates.size()+1, 3));
+        resultsPanel.add(new JLabel("Choice"));
+        resultsPanel.add(new JLabel("Vote Count"));
+        resultsPanel.add(new JLabel("Percentage"));
+        String str;
         for(int i = 0; i < candidates.size(); i++){
-            text += candidates.get(i) + "        " + numVotes[i] + "            " + percentages[i] + "%\n";
+            resultsPanel.add(new JLabel(candidates.get(i)));
+            resultsPanel.add(new JLabel(String.valueOf(numVotes[i])));
+            str = percentages[i] + "%";
+            resultsPanel.add(new JLabel(str));
         }
-        resultsArea.setText(text); // set text area with results
     }
 }

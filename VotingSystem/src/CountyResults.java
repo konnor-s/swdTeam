@@ -3,6 +3,10 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * Class CountyResults is responsible for keeping track of results by County.
+ * Displays a GUI of the results gotten from the database.
+ */
 public class CountyResults extends JFrame {
     private String county;
     private String state;
@@ -11,6 +15,7 @@ public class CountyResults extends JFrame {
     private ArrayList<Integer> votes;
 
     public CountyResults(String county, String state){
+        //Setting up the GUI
         super("Current Results for " + county + ", " + state);
         this.county = county;
         this.state = state;
@@ -27,6 +32,7 @@ public class CountyResults extends JFrame {
     }
 
     public void getData(){
+        //Method which fills up these 3 ArrayLists so they can be displayed on the GUI
         final String SELECT_QUERY = "SELECT Choice, Position, County, State, Votes FROM Ballot";
         choices = new ArrayList<>();
         positions = new ArrayList<>();
@@ -48,7 +54,6 @@ public class CountyResults extends JFrame {
                     positions.add(resultSet.getString(2));
                     votes.add(resultSet.getInt(5));
                 }
-
             }
         }
         catch (SQLException e) {
