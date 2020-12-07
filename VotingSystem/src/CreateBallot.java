@@ -87,10 +87,11 @@ public class CreateBallot extends JFrame {
                     Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
 
                     //Removing from the database
-                    String tempString = "DELETE FROM Ballot WHERE Choice = ? AND County = ?";
+                    String tempString = "DELETE FROM Ballot WHERE Choice = ? AND County = ? AND State = ?";
                     PreparedStatement remove = connection.prepareStatement(tempString);
                     remove.setString(1,jtfForName.getText());
                     remove.setString(2,county);
+                    remove.setString(3,state);
                     remove.executeUpdate();
                 }
                 catch(SQLException e){
