@@ -1,7 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  * Class CountyResults is responsible for keeping track of results by County.
@@ -20,15 +23,43 @@ public class CountyResults extends JFrame {
         this.county = county;
         this.state = state;
         getData();
-        setLayout(new GridLayout(choices.size()+1,3));
-        add(new JLabel("Position"));
-        add(new JLabel("Choice"));
-        add(new JLabel("Votes"));
+        JPanel resultsPanel = new JPanel();
+        add(resultsPanel, BorderLayout.CENTER);
+        resultsPanel.setLayout(new GridLayout(choices.size()+1,3));
+        resultsPanel.add(new JLabel("Position"));
+        resultsPanel.add(new JLabel("Choice"));
+        resultsPanel.add(new JLabel("Votes"));
         for(int i = 0; i < choices.size(); i++){
-            add(new JLabel(positions.get(i)));
-            add(new JLabel(choices.get(i)));
-            add(new JLabel(String.valueOf(votes.get(i))));
+            resultsPanel.add(new JLabel(positions.get(i)));
+            resultsPanel.add(new JLabel(choices.get(i)));
+            resultsPanel.add(new JLabel(String.valueOf(votes.get(i))));
         }
+        JButton certify = new JButton("Certify");
+        certify.addActionListener(
+                new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        try{
+                            //Connect to server
+                            Connection connection = DriverManager.getConnection("jdbc:mysql://s-l112.engr.uiowa.edu:3306/engr_class011", "engr_class011", "dbforece!");
+
+                            //Updating Finalized column in Ballot
+                            String tempString = "UPDATE Ballot SET Certified = ? WHERE County = ? AND State = ?";
+                            PreparedStatement upd = connection.prepareStatement(tempString);
+                            upd.setInt(1,1);
+                            upd.setString(2,county);
+                            upd.setString(3,state);
+                            upd.executeUpdate();
+                            JOptionPane.showMessageDialog(null, "Results Certified");
+                        }
+                        catch(SQLException e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+        );
+        add(certify, BorderLayout.SOUTH);
     }
 
     public void getData(){
